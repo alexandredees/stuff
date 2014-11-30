@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+
+<head>
+<meta charset="utf-8" />
+<title>My Amazing Chat</title>
+
+<!--
+<meta name="description" content="Site fictif crée par AlexFahl (www.alexfahl.com)" /> 
+<meta name="keywords" content="test, design, website, infographie" /> 
+<meta name="author" content="Alexandre Dees" /> 
+<meta name="copyright" content="Alexandre Dees" /> 
+
+<link rel="shortcut icon" href="#" />
+<link rel="icon" type="image/ico" href="#" />
+
+<meta name="robots" content="noindex, nofollow" />
+
+
+<meta property="og:image:width" content="300" />
+<meta property="og:image:height" content="300" />
+<meta property="og:title" content="MarketPlace Factory, solution de création de places de marché"/>
+<meta property="og:url" content="http://www.marketplacefactory.com"/>
+<meta property="og:site_name" content="MarketPlace Factory, solution de création de places de marché"/>
+<meta property="og:type" content="website"/>
+
+<meta property="og:description" content="Solution de monétisation de trafic pour les media et les e-commerçants. Marketplacefactory: faites décoller vos revenus."/>
+<meta name="twitter:card" content="summary">
+<meta name="twitter:url" content="http://www.marketplacefactory.com">
+<meta name="twitter:title" content="MarketPlace Factory, solution de création de places de marché">
+<meta name="twitter:description" content="Solution de monétisation de trafic pour les media et les e-commerçants. Marketplacefactory: faites décoller vos revenus.">
+
+<meta name="twitter:image" content="http://islreview.com/img/facebook-link-img.jpg">
+<meta property="og:image" content="http://islreview.com/img/facebook-img.jpg"/>
+-->
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true" /><!-- MOBILE - ANDROID -->
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0"><!-- MOBILE -->
+
+<!--
+<link href="css/reset.css" rel="stylesheet" type="text/css" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+-->
+
+<style type="text/css">
+	body { background: #f6f6f6; margin:0; font-size: 16px; color: #333333;}
+	#wrapper { margin: 0 auto; width:280px; padding: 16px;}
+	a { text-decoration: none; color: #6655bb;}
+	h1 { font-size: 28px; color: #6655bb; margin: 0 0 0.4em 0;}
+	ul { padding: 0 0 0 20px;}
+	strong { color:red;}
+	.usrnm { color: green; font-weight: bold; margin-right: 0.5em;}
+	.infmsg { color: blue; font-style: italic;}
+</style>
+
+<script src="http://code.jquery.com/jquery.min.js"></script>
+</head>
+
+<body>
+
+	<div id="wrapper">
+		<h1>My Amazing Chat</h1>
+		<input type="text" id="pseudo" placeholder="Enter your pseudo" /><br/>
+		<input type="text" id="msg" placeholder="Enter a msg" />
+		<div class="actions">
+			<button type="button" id="send-msg">Send Msg</button>
+		</div>
+		<div><p>Online : <strong class="coNb">0</strong></p></div>
+		<ul id="msg-list">
+			<li><span class="usrnm">Bot :</span>Dites nous bonjour ! ;-)</li>
+		</ul>
+		<!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> -->
+	</div>
+
+	<script src="http://www.adesvapor.com/servor/tests/javascript/nodejs/playground/chat_web/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://www.adesvapor.com/servor/tests/javascript/nodejs/playground/chat_web/'); // a adapter sur internet (ex : http://monsite.com)
+
+        socket.on('welcome', function(wm){
+        	alert('Message du serveur : "'+wm.welcomeMsg+'". \nVous etes le '+wm.onlineUsers+'eme connecté..');
+        	$(".coNb").text(wm.onlineUsers);
+        });
+
+        socket.on('update_msgs', function(content){
+        	$("#msg-list").append("<li><span class='usrnm'>"+content.userName+" :</span>"+content.userMsg+"</li>");
+        	$(".coNb").text(content.onlineUsers);
+        });
+
+        socket.on('info_msg', function(content){
+        	$("#msg-list").append("<li><span class='infmsg'>"+content.infoMsg+" :</span></li>");
+        	$(".coNb").text(content.onlineUsers);
+        });
+
+        $("#send-msg").click(function(){
+        	var name = $("#pseudo").val();
+        	var msg = $("#msg").val();
+        	if(name && msg){
+        		socket.emit('new_msg', { 
+					userMsg : msg,
+					userName: name
+				});
+        	}
+        	else{
+        		if(name == false){
+        			alert("Tu t'appeles comment mecton... ?!!!");
+        			return
+        		}
+        		if(msg == false){
+        			alert("Tu comptes envoyer beaucoup d'air comme ça... ??");
+        			return
+        		}
+        	}
+        })
+    </script>
+
+</body>
+</html>
